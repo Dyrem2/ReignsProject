@@ -6,8 +6,6 @@ namespace ReignsBot
 {
     class Persona
     {
-
-
-
+        
     }
 }
