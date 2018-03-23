@@ -8,7 +8,9 @@ namespace ReignsBot
         {
             //just trying
             //another comment
-            Console.WriteLine("Hello World!");
+
+            Console.WriteLine("Began ascolta musica di merda");
+            Console.ReadLine();
         }
     }
 }
