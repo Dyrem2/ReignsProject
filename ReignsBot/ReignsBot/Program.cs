@@ -6,7 +6,8 @@ namespace ReignsBot
     {
         static void Main(string[] args)
         {
-            //just trying;
+            //just trying
+            //another comment
             Console.WriteLine("Hello World!");
         }
     }
