@@ -1,7 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
+using Telegram;
+using Telegram.Bot;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.InlineKeyboardButtons;
+using Telegram.Bot.Types.ReplyMarkups;
+using ReignsBot.classes;
+using System.Collections.Generic;
 
 namespace ReignsBot.classes
 {
@@ -10,7 +15,9 @@ namespace ReignsBot.classes
         string _trigger;        //text wich will trigger this item  (es. "/start")
         string _commandName;    //command name  (es. Start)
         string _commandDesc;    //command description (es. This command will show Starting information)
-        Output _output;            //command output when triggered (es. "Hello, this is the start command")
+        string _textOutput;
+        Output _output;         //command output when triggered (es. "Hello, this is the start command")
+        //IReplyMarkup markup; 
 
         /// <summary>
         /// Init of a new Menu Item
@@ -19,19 +26,23 @@ namespace ReignsBot.classes
         /// <param name="newCommandName">command name  (es. Start)</param>
         /// <param name="newCommandDesc">command description (es. This command will show Starting information)</param>
         /// <param name="newOutput">command output when triggered (es. "Hello, this is the start command")</param>
-        public MenuItems(string newTrigger, string newCommandName, string newCommandDesc, string newOutput)
+        public MenuItems(string newTrigger, string newCommandName,
+            string newCommandDesc, string newTextOutput)
         {
             _trigger = newTrigger;
             _commandName = newCommandName;
             _commandDesc = newCommandDesc;
-            _output = new Output(newOutput);
+            _textOutput = newTextOutput;
+            _output = new Output(newTextOutput);
         }
 
-        public MenuItems(string newTrigger, string newCommandName, string newCommandDesc,InlineKeyboardButton newOutput)
+        public MenuItems(string newTrigger, string newCommandName, 
+            string newCommandDesc,InlineKeyboardButton newOutput, string newTextOutput = "")
         {
             _trigger = newTrigger;
             _commandName = newCommandName;
             _commandDesc = newCommandDesc;
+            _textOutput = newTextOutput;
             _output = new  Output(newOutput);
         }
 
@@ -52,6 +63,7 @@ namespace ReignsBot.classes
         public string Trigger { get => _trigger; }
         public string CommandName { get => _commandName; }
         public string CommandDesc { get => _commandDesc; }
+        public string TextOutput { get => _textOutput; }
         public Output Output { get => _output; }
     }
 

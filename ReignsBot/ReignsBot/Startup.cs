@@ -4,6 +4,7 @@ using Telegram;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.InlineKeyboardButtons;
+using Telegram.Bot.Types.ReplyMarkups;
 using ReignsBot.classes;
 using System.Collections.Generic;
 
@@ -38,7 +39,7 @@ namespace ReignsBot
             menuItems.Add(new MenuItems("/startstory", "Start Story", "Start your adventure in your reign", "Funziona"));
             menuItems.Add(new MenuItems("/donate", "DONATION REQUEST", "Support our project", "FUCK YEAH"));
             menuItems.Add(new MenuItems("/stats", "Statistics", "Watch career stats of your reign", "Spread alto"));
-            menuItems.Add(new MenuItems("/Button", "Test comand", "Test inline buttons", InlineKeyboardButton.WithCallbackData("")));
+            menuItems.Add(new MenuItems("/button", "Test comand", "Test inline buttons", InlineKeyboardButton.WithCallbackData("Testo"), "Testo"));
             menuItems.Add(new MenuItems("/help", "Help", "Show help page", MenuItems.CunstructHelpPage(menuItems)));
             Console.WriteLine("Complete!");
 
@@ -63,9 +64,9 @@ namespace ReignsBot
             Console.WriteLine("Bot init finshed");
 
 
-            Console.WriteLine("-----------------------------------------------------"+
-                              "!!!!!AT ANY TIME, TYPE ENTER KEY TO STOP THE BOT!!!!!"+
-                              "-----------------------------------------------------");
+            Console.WriteLine("-----------------------------------------------------\n"+
+                              "!!!!!AT ANY TIME, TYPE ENTER KEY TO STOP THE BOT!!!!!\n"+
+                              "-----------------------------------------------------\n");
 
             //Da utilizzare qualcosa di meglio come una command line
             Console.ReadLine();
@@ -90,7 +91,21 @@ namespace ReignsBot
                 if (e.Message.Text == item.Trigger)
                 {
                     Console.WriteLine("\tCommand triggered: " + item.CommandName + "\t| Trigger: " + item.Trigger);
-                    ClientBot.SendTextMessageAsync(e.Message.Chat.Id, item.Output.OutString);
+                    switch (item.Output.Type)
+                    {
+                        case Output.OutType.IsString:
+                            ClientBot.SendTextMessageAsync(e.Message.Chat.Id, item.TextOutput);
+                            break;
+
+                        case Output.OutType.IsInlineKeyboardButton:
+                            ClientBot.SendTextMessageAsync(e.Message.Chat.Id, item.TextOutput,
+                                Telegram.Bot.Types.Enums.ParseMode.Html, false, false, 0, new InlineKeyboardMarkup());
+                            break;
+
+                        default:
+                            Console.WriteLine("Something went wrong :/");
+                            break;
+                    }
                     return; //If one command is triggered, don't search for other commands to trigger!
                 }
             }
