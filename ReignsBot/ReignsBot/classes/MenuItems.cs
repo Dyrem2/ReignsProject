@@ -26,6 +26,20 @@ namespace ReignsBot.classes
             _output = newOutput;
         }
 
+        public static string CunstructHelpPage(List<MenuItems> CommandList)
+        {
+            string HelpPage = "";
+
+            foreach(MenuItems command in CommandList)
+            {
+                HelpPage += "\t\tCOMMAND LIST\t\t\n" +
+                "\t" + command.CommandName + "\n" +
+                "\t\tDesc:" + command.CommandDesc + "\n" +
+                "\t\tUsage:" + command.Trigger + "\n";
+            }
+            return HelpPage;
+        }
+
         public string Trigger { get => _trigger; }
         public string CommandName { get => _commandName; }
         public string CommandDesc { get => _commandDesc; }

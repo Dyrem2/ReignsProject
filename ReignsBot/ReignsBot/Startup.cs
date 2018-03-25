@@ -30,9 +30,11 @@ namespace ReignsBot
 
             Console.Write("Init MenutItems: ");
             menuItems.Add(new MenuItems("/start", "Start", "Start", "Funziona"));
-            menuItems.Add(new MenuItems("/start", "Start", "Start", "Funziona"));
-            menuItems.Add(new MenuItems("/start", "Start", "Start", "Funziona"));
-            menuItems.Add(new MenuItems("/start", "Start", "Start", "Funziona"));
+            menuItems.Add(new MenuItems("/startrandom", "Start Random", "Start your adventure in a random mode", "Funziona"));
+            menuItems.Add(new MenuItems("/startstory", "Start Story", "Start your adventure in your reign", "Funziona"));
+            menuItems.Add(new MenuItems("/donate", "DONATION REQUEST", "Support our project", "FUCK YEAH"));
+            menuItems.Add(new MenuItems("/stats", "Statistics", "Watch career stats of your reign", "Spread alto"));
+            menuItems.Add(new MenuItems("/help", "Help", "Show help page", MenuItems.CunstructHelpPage(menuItems)));
             Console.WriteLine("Complete!");
 
             /*
@@ -61,7 +63,8 @@ namespace ReignsBot
         {
             Console.WriteLine("[" + DateTime.Now + "]" +
                 " Chat message recived: " + e.Message.Text +
-                "\t| From: " + e.Message.Chat.Username + " Id: " + e.Message.Chat.Id);
+                "\t| From: " + e.Message.Chat.Username +
+                " Id: " + e.Message.Chat.Id);
 
             foreach (MenuItems item in menuItems)
             {
