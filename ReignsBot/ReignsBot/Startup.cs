@@ -30,15 +30,21 @@ namespace ReignsBot
             ClientBot.StartReceiving();
             Console.WriteLine("Reciving: " + ClientBot.IsReceiving);
 
+            #region Menu init
+
             Console.Write("Init MenutItems: ");
             menuItems.Add(new MenuItems("/start", "Start", "Start", "Funziona"));
             menuItems.Add(new MenuItems("/startrandom", "Start Random", "Start your adventure in a random mode", "Funziona"));
             menuItems.Add(new MenuItems("/startstory", "Start Story", "Start your adventure in your reign", "Funziona"));
             menuItems.Add(new MenuItems("/donate", "DONATION REQUEST", "Support our project", "FUCK YEAH"));
             menuItems.Add(new MenuItems("/stats", "Statistics", "Watch career stats of your reign", "Spread alto"));
-            menuItems.Add(new MenuItems("/Button", "Test comand", "Test inline buttons", "Aspe"));
+            menuItems.Add(new MenuItems("/Button", "Test comand", "Test inline buttons", InlineKeyboardButton.WithCallbackData("")));
             menuItems.Add(new MenuItems("/help", "Help", "Show help page", MenuItems.CunstructHelpPage(menuItems)));
             Console.WriteLine("Complete!");
+
+            #endregion
+
+            #region Commento
 
             /*
              *  ClientBot.SetWebhookAsync("");
@@ -52,8 +58,14 @@ namespace ReignsBot
              *      );  
              */
 
+            #endregion
+
             Console.WriteLine("Bot init finshed");
-            Console.WriteLine("!!!!!AT ANY TIME, TYPE ENTER KEY TO STOP THE BOT!!!!!");
+
+
+            Console.WriteLine("-----------------------------------------------------"+
+                              "!!!!!AT ANY TIME, TYPE ENTER KEY TO STOP THE BOT!!!!!"+
+                              "-----------------------------------------------------");
 
             //Da utilizzare qualcosa di meglio come una command line
             Console.ReadLine();
@@ -78,10 +90,12 @@ namespace ReignsBot
                 if (e.Message.Text == item.Trigger)
                 {
                     Console.WriteLine("\tCommand triggered: " + item.CommandName + "\t| Trigger: " + item.Trigger);
-                    ClientBot.SendTextMessageAsync(e.Message.Chat.Id, item.Output);
+                    ClientBot.SendTextMessageAsync(e.Message.Chat.Id, item.Output.OutString);
                     return; //If one command is triggered, don't search for other commands to trigger!
                 }
             }
+
+
             ClientBot.SendTextMessageAsync(e.Message.Chat.Id, "Non riesco a capirti zio, prova a scrivere '/' per vedere se esiste un comando simile");
 
         }
