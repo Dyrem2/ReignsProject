@@ -34,8 +34,8 @@ namespace ReignsBot.classes
             {
                 HelpPage += "\t\tCOMMAND LIST\t\t\n" +
                 "\t" + command.CommandName + "\n" +
-                "\t\tDesc:" + command.CommandDesc + "\n" +
-                "\t\tUsage:" + command.Trigger + "\n";
+                "\t\t\t\tDesc:" + command.CommandDesc + "\n" +
+                "\t\t\t\tUsage:" + command.Trigger + "\n";
             }
             return HelpPage;
         }
