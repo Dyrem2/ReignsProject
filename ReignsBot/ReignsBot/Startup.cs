@@ -7,6 +7,8 @@ using Telegram.Bot.Types.InlineKeyboardButtons;
 using Telegram.Bot.Types.ReplyMarkups;
 using ReignsBot.classes;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using System.Linq;
 
 namespace ReignsBot
 {
@@ -14,6 +16,8 @@ namespace ReignsBot
     {
         static TelegramBotClient ClientBot = new TelegramBotClient("540336212:AAFDxXrlVvJ6rjRdUap4t0OYfUHkSJD99kw");
         static List<MenuItems> menuItems = new List<MenuItems>();
+        static ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
+
         //static Chat ChatBot;
         //static User UserBot;
         //static Update UpdateBot;
@@ -23,9 +27,16 @@ namespace ReignsBot
         //static Task<Chat> TaskChatBot;
 
 
+
+
         static void Main(string[] args)
         {
             ClientBot.OnMessage += ClientBot_OnMessage;
+            ClientBot.OnMessageEdited += ClientBot_OnMessage;
+            ClientBot.OnCallbackQuery += ClientBot_OnCallbackQuery1;
+            ClientBot.OnInlineQuery += ClientBot_OnInlineQuery;
+            ClientBot.OnInlineResultChosen += ClientBot_OnInlineResultChosen;
+            ClientBot.OnReceiveError += ClientBot_OnReceiveError;
 
             Console.WriteLine("Starting the bot");
             ClientBot.StartReceiving();
@@ -34,11 +45,11 @@ namespace ReignsBot
             #region Menu init
 
             Console.Write("Init MenutItems: ");
-            menuItems.Add(new MenuItems("/start", "Start", "Start", "Funziona"));
-            menuItems.Add(new MenuItems("/startrandom", "Start Random", "Start your adventure in a random mode", "Funziona"));
-            menuItems.Add(new MenuItems("/startstory", "Start Story", "Start your adventure in your reign", "Funziona"));
-            menuItems.Add(new MenuItems("/donate", "DONATION REQUEST", "Support our project", "FUCK YEAH"));
-            menuItems.Add(new MenuItems("/stats", "Statistics", "Watch career stats of your reign", "Spread alto"));
+            menuItems.Add(new MenuItems("/start", "Start", "Start", "Ciao,benvenuto nel magico mondo di Reigns, dimostra a tutti le tue doti da sovrano!"));
+            menuItems.Add(new MenuItems("/startrandom", "Start Random", "Start your adventure in a random mode", "Sto genetando le domande da porti"));
+            menuItems.Add(new MenuItems("/startstory", "Start Story", "Start your adventure in your reign", "Che la storia abbia inizio"));
+            menuItems.Add(new MenuItems("/donate", "DONATION REQUEST", "Support our project", "Supportaci donando a paypal.me/Frikyfriks"));
+            menuItems.Add(new MenuItems("/stats", "Statistics", "Watch career stats of your reign", "Ecco le tue statistiche:"));
             menuItems.Add(new MenuItems("/button", "Test comand", "Test inline buttons", InlineKeyboardButton.WithCallbackData("Testo"), "Testo"));
             menuItems.Add(new MenuItems("/help", "Help", "Show help page", MenuItems.CunstructHelpPage(menuItems)));
             Console.WriteLine("Complete!");
@@ -64,14 +75,34 @@ namespace ReignsBot
             Console.WriteLine("Bot init finshed");
 
 
-            Console.WriteLine("-----------------------------------------------------\n"+
-                              "!!!!!AT ANY TIME, TYPE ENTER KEY TO STOP THE BOT!!!!!\n"+
+            Console.WriteLine("-----------------------------------------------------\n" +
+                              "!!!!!AT ANY TIME, TYPE ENTER KEY TO STOP THE BOT!!!!!\n" +
                               "-----------------------------------------------------\n");
 
             //Da utilizzare qualcosa di meglio come una command line
             Console.ReadLine();
 
             ClientBot.StopReceiving();
+        }
+
+        private static void ClientBot_OnReceiveError(object sender, Telegram.Bot.Args.ReceiveErrorEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ClientBot_OnInlineResultChosen(object sender, Telegram.Bot.Args.ChosenInlineResultEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ClientBot_OnInlineQuery(object sender, Telegram.Bot.Args.InlineQueryEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ClientBot_OnCallbackQuery1(object sender, Telegram.Bot.Args.CallbackQueryEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private static void ClientBot_OnCallbackQuery(object sender, Telegram.Bot.Args.CallbackQueryEventArgs e)
@@ -110,9 +141,23 @@ namespace ReignsBot
                 }
             }
 
+            ClientBot.SendTextMessageAsync(e.Message.Chat.Id, "Nessun comando è stato impostato a questo nome, prova a scrivere '/' per vedere se esiste un comando simile");
 
-            ClientBot.SendTextMessageAsync(e.Message.Chat.Id, "Non riesco a capirti zio, prova a scrivere '/' per vedere se esiste un comando simile");
 
+      
+            InlineKeyboardMarkup keyLanguage = new InlineKeyboardMarkup(
+            new InlineKeyboardButton[][]
+            {
+                new InlineKeyboardButton[]
+                    {
+                        new InlineKeyboardCallbackButton("Random Mode","rand"),
+                        new InlineKeyboardCallbackButton("Story Mode","story"),
+                    }
+                    });
+            string Str = "Ciao,benvenuto nel magico mondo di Reigns, dimostra a tutti le tue doti da sovrano!";
+            ClientBot.SendTextMessageAsync(e.Message.Chat.Id, Str, replyMarkup: keyLanguage);
+           
         }
+        
     }
 }
