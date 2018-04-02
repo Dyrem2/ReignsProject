@@ -38,6 +38,7 @@ namespace ReignsBot
             ClientBot.OnInlineResultChosen += ClientBot_OnInlineResultChosen;
             ClientBot.OnReceiveError += ClientBot_OnReceiveError;
 
+
             Console.WriteLine("Starting the bot");
             ClientBot.StartReceiving();
             Console.WriteLine("Reciving: " + ClientBot.IsReceiving);
@@ -50,6 +51,7 @@ namespace ReignsBot
             menuItems.Add(new MenuItems("/startstory", "Start Story", "Start your adventure in your reign", "Che la storia abbia inizio"));
             menuItems.Add(new MenuItems("/donate", "DONATION REQUEST", "Support our project", "Supportaci donando a paypal.me/Frikyfriks"));
             menuItems.Add(new MenuItems("/stats", "Statistics", "Watch career stats of your reign", "Ecco le tue statistiche:"));
+            menuItems.Add(new MenuItems("/rules", "Game Rules", "Learn how to play", "Ogni anno arriva una nuova \nimportante e apparentemente casuale richiesta dal tuo imprevedibile regno, mentre dovrai fare tutto il possibile per mantenere l'equilibrio tra le seguenti classi:\n• Chiesa ⛪️ \n• Popolo 👨‍👩‍👧‍👦\n• Esercito ⚔️\n• Denaro 💰\nDecisioni attente e pianificazione ti porteranno a regnare a lungo, ma cause impreviste, eventi a sorpresa e scarsa fortuna possono far cadere anche il più radicato dei monarchi.Rimani a capo del tuo regno per più tempo possibile, crea alleanze, fatti dei nemici e trova nuovi modi per morire mentre la tua dinastia si fa strada negli anni."));
             menuItems.Add(new MenuItems("/button", "Test comand", "Test inline buttons", InlineKeyboardButton.WithCallbackData("Testo"), "Testo"));
             menuItems.Add(new MenuItems("/help", "Help", "Show help page", MenuItems.CunstructHelpPage(menuItems)));
             Console.WriteLine("Complete!");
@@ -102,13 +104,15 @@ namespace ReignsBot
 
         private static void ClientBot_OnCallbackQuery1(object sender, Telegram.Bot.Args.CallbackQueryEventArgs e)
         {
-            throw new NotImplementedException();
+            ClientBot.AnswerCallbackQueryAsync(e.CallbackQuery.Id, "Ecco");
         }
 
         private static void ClientBot_OnCallbackQuery(object sender, Telegram.Bot.Args.CallbackQueryEventArgs e)
         {
             ClientBot.AnswerCallbackQueryAsync(e.CallbackQuery.Id, "Ecco");
         }
+
+
 
         private static void ClientBot_OnMessage(object sender, Telegram.Bot.Args.MessageEventArgs e)
         {
@@ -139,24 +143,36 @@ namespace ReignsBot
                     }
                     return; //If one command is triggered, don't search for other commands to trigger!
                 }
-            }
+            }              
+           
 
-            ClientBot.SendTextMessageAsync(e.Message.Chat.Id, "Nessun comando è stato impostato a questo nome, prova a scrivere '/' per vedere se esiste un comando simile");
-
-
-      
-            InlineKeyboardMarkup keyLanguage = new InlineKeyboardMarkup(
+            InlineKeyboardMarkup menuinizio = new InlineKeyboardMarkup(
             new InlineKeyboardButton[][]
             {
                 new InlineKeyboardButton[]
                     {
-                        new InlineKeyboardCallbackButton("Random Mode","rand"),
-                        new InlineKeyboardCallbackButton("Story Mode","story"),
+                        new InlineKeyboardCallbackButton("Random Mode 🎲","rand"),
+                        new InlineKeyboardCallbackButton("Story Mode ⚜️","story"),
+                    },
+
+                new InlineKeyboardButton[]
+                    {
+                        new InlineKeyboardCallbackButton("Come si gioca? 🔎","rules"),
+                    },
+                new InlineKeyboardUrlButton[]
+                    {
+                        new InlineKeyboardUrlButton ("Donate 💰","https://www.paypal.me/FrikyFriks"),
+                        new InlineKeyboardUrlButton ("Support  ⛑", "https://t.me/ReignsSupportBot"),     
                     }
                     });
-            string Str = "Ciao,benvenuto nel magico mondo di Reigns, dimostra a tutti le tue doti da sovrano!";
-            ClientBot.SendTextMessageAsync(e.Message.Chat.Id, Str, replyMarkup: keyLanguage);
-           
+
+            string Str = "Ciao! Benvenuto nel bot Reigns, che ti permetterà di gestire il tuo regno! 🏰 \nRiuscirai a rendere contenti tutti? Quanto sopravviverai ? ";
+            ClientBot.SendTextMessageAsync(e.Message.Chat.Id, Str, replyMarkup:menuinizio);
+
+            
+            
+            
+
         }
         
     }
