@@ -33,7 +33,7 @@ namespace ReignsBot
         {
             ClientBot.OnMessage += ClientBot_OnMessage;
             ClientBot.OnMessageEdited += ClientBot_OnMessage;
-            ClientBot.OnCallbackQuery += ClientBot_OnCallbackQuery1;
+            ClientBot.OnCallbackQuery += ClientBot_OnCallbackQuery;
             ClientBot.OnInlineQuery += ClientBot_OnInlineQuery;
             ClientBot.OnInlineResultChosen += ClientBot_OnInlineResultChosen;
             ClientBot.OnReceiveError += ClientBot_OnReceiveError;
@@ -102,25 +102,20 @@ namespace ReignsBot
             throw new NotImplementedException();
         }
 
-        private static void ClientBot_OnCallbackQuery1(object sender, Telegram.Bot.Args.CallbackQueryEventArgs e)
-        {
-            ClientBot.AnswerCallbackQueryAsync(e.CallbackQuery.Id, "Ecco");
-        }
-
         private static void ClientBot_OnCallbackQuery(object sender, Telegram.Bot.Args.CallbackQueryEventArgs e)
         {
-            ClientBot.AnswerCallbackQueryAsync(e.CallbackQuery.Id, "Ecco");
-        }
-
-
-
+            Console.WriteLine("[" + DateTime.Now + "]" +
+                " Chat message recived: " + e.CallbackQuery.Data +
+                "\t| From: " + e.CallbackQuery.From.Username +
+                " Id: " + e.CallbackQuery.Id);
+        }      
         private static void ClientBot_OnMessage(object sender, Telegram.Bot.Args.MessageEventArgs e)
         {
             Console.WriteLine("[" + DateTime.Now + "]" +
                 " Chat message recived: " + e.Message.Text +
                 "\t| From: " + e.Message.Chat.Username +
                 " Id: " + e.Message.Chat.Id);
-
+            
             foreach (MenuItems item in menuItems)
             {
                 if (e.Message.Text == item.Trigger)
@@ -143,35 +138,37 @@ namespace ReignsBot
                     }
                     return; //If one command is triggered, don't search for other commands to trigger!
                 }
-            }              
-           
-
+            
+            }
             InlineKeyboardMarkup menuinizio = new InlineKeyboardMarkup(
             new InlineKeyboardButton[][]
             {
-                new InlineKeyboardButton[]
-                    {
-                        new InlineKeyboardCallbackButton("Random Mode 🎲","rand"),
-                        new InlineKeyboardCallbackButton("Story Mode ⚜️","story"),
-                    },
+                    new InlineKeyboardButton[]
+                        {
+                            new InlineKeyboardCallbackButton("Random Mode 🎲","rand"),
+                            new InlineKeyboardCallbackButton("Story Mode ⚜️","story"),
+                        },
 
-                new InlineKeyboardButton[]
-                    {
-                        new InlineKeyboardCallbackButton("Come si gioca? 🔎","rules"),
-                    },
-                new InlineKeyboardUrlButton[]
-                    {
-                        new InlineKeyboardUrlButton ("Donate 💰","https://www.paypal.me/FrikyFriks"),
-                        new InlineKeyboardUrlButton ("Support  ⛑", "https://t.me/ReignsSupportBot"),     
-                    }
+                    new InlineKeyboardButton[]
+                        {
+                            new InlineKeyboardCallbackButton("Come si gioca? 🔎","rules"),
+                        },
+                    new InlineKeyboardUrlButton[]
+                        {
+                            new InlineKeyboardUrlButton ("Donate 💰","https://www.paypal.me/FrikyFriks"),
+                            new InlineKeyboardUrlButton ("Support  ⛑", "https://t.me/ReignsSupportBot"),
+                        }
                     });
 
             string Str = "Ciao! Benvenuto nel bot Reigns, che ti permetterà di gestire il tuo regno! 🏰 \nRiuscirai a rendere contenti tutti? Quanto sopravviverai ? ";
-            ClientBot.SendTextMessageAsync(e.Message.Chat.Id, Str, replyMarkup:menuinizio);
+            ClientBot.SendTextMessageAsync(e.Message.Chat.Id, Str, replyMarkup: menuinizio);
 
-            
-            
-            
+
+
+
+
+
+
 
         }
         
