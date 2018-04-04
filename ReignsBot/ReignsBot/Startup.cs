@@ -28,7 +28,6 @@ namespace ReignsBot
 
 
 
-
         static void Main(string[] args)
         {
             ClientBot.OnMessage += ClientBot_OnMessage;
@@ -37,7 +36,6 @@ namespace ReignsBot
             ClientBot.OnInlineQuery += ClientBot_OnInlineQuery;
             ClientBot.OnInlineResultChosen += ClientBot_OnInlineResultChosen;
             ClientBot.OnReceiveError += ClientBot_OnReceiveError;
-
 
             Console.WriteLine("Starting the bot");
             ClientBot.StartReceiving();
@@ -87,6 +85,7 @@ namespace ReignsBot
             ClientBot.StopReceiving();
         }
 
+
         private static void ClientBot_OnReceiveError(object sender, Telegram.Bot.Args.ReceiveErrorEventArgs e)
         {
             throw new NotImplementedException();
@@ -108,6 +107,23 @@ namespace ReignsBot
                 " Chat message recived: " + e.CallbackQuery.Data +
                 "\t| From: " + e.CallbackQuery.From.Username +
                 " Id: " + e.CallbackQuery.Id);
+
+           InlineKeyboardMarkup Domanda = new InlineKeyboardMarkup(
+           new InlineKeyboardButton[][]
+           {
+                    new InlineKeyboardButton[]
+                        {
+                            new InlineKeyboardCallbackButton("✅","yes"),
+                            new InlineKeyboardCallbackButton("❎","not"),
+                        },
+                   });
+
+            if (e.CallbackQuery.Data == "rand")
+            {
+                ClientBot.EditMessageTextAsync(e.CallbackQuery.From.Id, e.CallbackQuery.Message.MessageId, "Saltor il folle, 🃏 " +
+                    "Sò per certo che il generale Marcus sta organizzando una rivolta per spodestrarla e prendere il suo posto.");
+                ClientBot.EditMessageReplyMarkupAsync(e.CallbackQuery.From.Id, e.CallbackQuery.Message.MessageId, replyMarkup: Domanda);
+            }
         }      
         private static void ClientBot_OnMessage(object sender, Telegram.Bot.Args.MessageEventArgs e)
         {
@@ -115,7 +131,7 @@ namespace ReignsBot
                 " Chat message recived: " + e.Message.Text +
                 "\t| From: " + e.Message.Chat.Username +
                 " Id: " + e.Message.Chat.Id);
-            
+           
             foreach (MenuItems item in menuItems)
             {
                 if (e.Message.Text == item.Trigger)
@@ -162,12 +178,6 @@ namespace ReignsBot
 
             string Str = "Ciao! Benvenuto nel bot Reigns, che ti permetterà di gestire il tuo regno! 🏰 \nRiuscirai a rendere contenti tutti? Quanto sopravviverai ? ";
             ClientBot.SendTextMessageAsync(e.Message.Chat.Id, Str, replyMarkup: menuinizio);
-
-
-
-
-
-
 
 
         }
