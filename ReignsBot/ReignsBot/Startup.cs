@@ -121,8 +121,9 @@ namespace ReignsBot
             if (e.CallbackQuery.Data == "rand")
             {
                 ClientBot.EditMessageTextAsync(e.CallbackQuery.From.Id, e.CallbackQuery.Message.MessageId, "Saltor il folle, 🃏 " +
-                    "Sò per certo che il generale Marcus sta organizzando una rivolta per spodestrarla e prendere il suo posto.");
+                    "So per certo che il generale Marcus sta organizzando una rivolta per spodestrarla e prendere il suo posto.");
                 ClientBot.EditMessageReplyMarkupAsync(e.CallbackQuery.From.Id, e.CallbackQuery.Message.MessageId, replyMarkup: Domanda);
+
             }
         }      
         private static void ClientBot_OnMessage(object sender, Telegram.Bot.Args.MessageEventArgs e)
