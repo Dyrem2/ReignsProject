@@ -118,13 +118,47 @@ namespace ReignsBot
                         },
                    });
 
-            if (e.CallbackQuery.Data == "rand")
+
+            InlineKeyboardMarkup Indietro = new InlineKeyboardMarkup(
+           new InlineKeyboardButton[][]
+           {
+                    new InlineKeyboardButton[]
+                        {
+                            new InlineKeyboardCallbackButton("Torna indietro 🔙","back"),
+                        },
+                   });
+
+
+            switch (e.CallbackQuery.Data)
             {
-                ClientBot.EditMessageTextAsync(e.CallbackQuery.From.Id, e.CallbackQuery.Message.MessageId, "Saltor il folle, 🃏 " +
+                case "rand":
+                    ClientBot.EditMessageTextAsync(e.CallbackQuery.From.Id, e.CallbackQuery.Message.MessageId, "Saltor il folle, 🃏 " +
                     "So per certo che il generale Marcus sta organizzando una rivolta per spodestrarla e prendere il suo posto.");
-                ClientBot.EditMessageReplyMarkupAsync(e.CallbackQuery.From.Id, e.CallbackQuery.Message.MessageId, replyMarkup: Domanda);
+                    ClientBot.EditMessageReplyMarkupAsync(e.CallbackQuery.From.Id, e.CallbackQuery.Message.MessageId, replyMarkup: Domanda);
+                    break;
+
+                case "story":
+                    ClientBot.EditMessageTextAsync(e.CallbackQuery.From.Id, e.CallbackQuery.Message.MessageId, "Work in progress");
+                    ClientBot.EditMessageReplyMarkupAsync(e.CallbackQuery.From.Id, e.CallbackQuery.Message.MessageId, replyMarkup: Indietro);
+                    break;
+
+                case "rules":
+                    ClientBot.EditMessageTextAsync(e.CallbackQuery.From.Id, e.CallbackQuery.Message.MessageId, "Ogni anno arriva una nuova \n" +
+                        "importante e apparentemente casuale richiesta dal tuo imprevedibile regno, mentre dovrai fare tutto il possibile per " +
+                        "mantenere l'equilibrio tra le seguenti classi:\n• Chiesa ⛪️ \n• Popolo 👨‍👩‍👧‍👦\n• Esercito ⚔️\n• Denaro 💰\nDecisioni " +
+                        "attente e pianificazione ti porteranno a regnare a lungo, ma cause impreviste, eventi a sorpresa e scarsa fortuna " +
+                        "possono far cadere anche il più radicato dei monarchi.Rimani a capo del tuo regno per più tempo possibile, crea alleanze, " +
+                        "fatti dei nemici e trova nuovi modi per morire mentre la tua dinastia si fa strada negli anni.");
+                    ClientBot.EditMessageReplyMarkupAsync(e.CallbackQuery.From.Id, e.CallbackQuery.Message.MessageId, replyMarkup: Indietro);
+                    break;
+
+                default:
+                    ClientBot.SendTextMessageAsync(e.CallbackQuery.From.Id, "Qualcosa è andato storto");
+                    break;
+
 
             }
+            
         }      
         private static void ClientBot_OnMessage(object sender, Telegram.Bot.Args.MessageEventArgs e)
         {
