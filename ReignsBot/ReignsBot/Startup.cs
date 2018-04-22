@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Data;
+using MySql.Data.MySqlClient;
 using Telegram;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -8,16 +11,15 @@ using Telegram.Bot.Types.ReplyMarkups;
 using ReignsBot.classes;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using System.Linq;
+using Renci.SshNet;
 
 namespace ReignsBot
 {
-    class Startup
+    class Reigns
     {
         static TelegramBotClient ClientBot = new TelegramBotClient("540336212:AAFDxXrlVvJ6rjRdUap4t0OYfUHkSJD99kw");
         static List<MenuItems> menuItems = new List<MenuItems>();
         static ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
-
         //static Chat ChatBot;
         //static User UserBot;
         //static Update UpdateBot;
@@ -30,6 +32,8 @@ namespace ReignsBot
 
         static void Main(string[] args)
         {
+            #region Triggers
+
             ClientBot.OnMessage += ClientBot_OnMessage;
             ClientBot.OnMessageEdited += ClientBot_OnMessage;
             ClientBot.OnCallbackQuery += ClientBot_OnCallbackQuery;
@@ -37,9 +41,37 @@ namespace ReignsBot
             ClientBot.OnInlineResultChosen += ClientBot_OnInlineResultChosen;
             ClientBot.OnReceiveError += ClientBot_OnReceiveError;
 
+            #endregion
+
             Console.WriteLine("Starting the bot");
             ClientBot.StartReceiving();
             Console.WriteLine("Reciving: " + ClientBot.IsReceiving);
+
+            MySqlConnectionStringBuilder connectionString = new MySqlConnectionStringBuilder
+            {
+                Server = "FUNZIONA MA BISOGNA RENDERE I DATI PRIVATI",
+                UserID = "root",
+                Password = "DEVO CAMBIARLA MA FUNZIONA",
+                Database = "db_reigns",
+                SslMode = MySqlSslMode.None
+            };
+
+            MySqlConnection connection = new MySqlConnection(connectionString.ConnectionString);
+            connection.Open();
+
+            /*
+            using (var conn = new MySqlConnection(connection.ToString()))
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = string.Format("SELECT * FROM commands");
+                conn.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    var data = reader.GetString(0);
+                    Console.WriteLine(data);
+                }
+            }*/
 
             #region Menu init
 
@@ -85,22 +117,20 @@ namespace ReignsBot
             ClientBot.StopReceiving();
         }
 
+        #region Events
 
         private static void ClientBot_OnReceiveError(object sender, Telegram.Bot.Args.ReceiveErrorEventArgs e)
         {
             throw new NotImplementedException();
         }
-
         private static void ClientBot_OnInlineResultChosen(object sender, Telegram.Bot.Args.ChosenInlineResultEventArgs e)
         {
             throw new NotImplementedException();
         }
-
         private static void ClientBot_OnInlineQuery(object sender, Telegram.Bot.Args.InlineQueryEventArgs e)
         {
             throw new NotImplementedException();
         }
-
         private static void ClientBot_OnCallbackQuery(object sender, Telegram.Bot.Args.CallbackQueryEventArgs e)
         {
             Console.WriteLine("[" + DateTime.Now + "]" +
@@ -216,6 +246,15 @@ namespace ReignsBot
 
 
         }
-        
+
+        #endregion
+
+        #region Methods
+
+        private void LinkTrigger() { }
+
+        private void connectToDb() { }
+
+        #endregion
     }
 }
