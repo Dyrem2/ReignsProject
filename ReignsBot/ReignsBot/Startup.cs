@@ -11,7 +11,6 @@ using Telegram.Bot.Types.ReplyMarkups;
 using ReignsBot.classes;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Renci.SshNet;
 
 namespace ReignsBot
 {
@@ -46,18 +45,60 @@ namespace ReignsBot
             Console.WriteLine("Starting the bot");
             ClientBot.StartReceiving();
             Console.WriteLine("Reciving: " + ClientBot.IsReceiving);
+            MySqlConnectionStringBuilder connectionString;
+            bool success=false;
+            do {
+                try
+                {
+                    string server, password = "";
+                    Console.Write("Server: "); server = Console.ReadLine();
+                    Console.Write("Password: "); //password = Console.ReadLine();
+                    ConsoleKeyInfo key;
+                    do
+                    {
+                        key = Console.ReadKey(true);
 
-            MySqlConnectionStringBuilder connectionString = new MySqlConnectionStringBuilder
-            {
-                Server = "FUNZIONA MA BISOGNA RENDERE I DATI PRIVATI",
-                UserID = "root",
-                Password = "DEVO CAMBIARLA MA FUNZIONA",
-                Database = "db_reigns",
-                SslMode = MySqlSslMode.None
-            };
+                        if (key.Key != ConsoleKey.Backspace && key.Key != ConsoleKey.Enter)
+                        {
+                            password += key.KeyChar;
+                            Console.Write("*");
+                        }
+                        else
+                        {
+                            if (key.Key == ConsoleKey.Backspace && password.Length > 0)
+                            {
+                                password = password.Substring(0, (password.Length - 1));
+                                Console.Write("\b \b");
+                            }
+                        }
 
-            MySqlConnection connection = new MySqlConnection(connectionString.ConnectionString);
-            connection.Open();
+                    }
+                    // Stops Receving Keys Once Enter is Pressed
+                    while (key.Key != ConsoleKey.Enter);
+                    Console.WriteLine();
+
+                    connectionString = new MySqlConnectionStringBuilder
+                    {
+                        Server = server,
+                        UserID = "root",
+                        Password = password,
+                        Database = "db_reigns",
+                        SslMode = MySqlSslMode.None
+                    };
+
+
+                    MySqlConnection connection = new MySqlConnection(connectionString.ConnectionString);
+                    connection.Open();
+                    success = true;
+                }
+                catch (Exception ex)
+                { 
+                
+                    Console.Write("Errore durante la connessione al server: " + ex.Message +
+                                  "\n Premi 'Enter' per continuare");
+                    Console.ReadLine();
+                }
+            }while (!success);
 
             /*
             using (var conn = new MySqlConnection(connection.ToString()))
