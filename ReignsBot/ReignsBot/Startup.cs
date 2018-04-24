@@ -16,16 +16,16 @@ namespace ReignsBot
 {
     class Reigns
     {
+        public static ConsoleColor console_default_color = Console.ForegroundColor;
+
         static TelegramBotClient ClientBot = new TelegramBotClient("540336212:AAFDxXrlVvJ6rjRdUap4t0OYfUHkSJD99kw");
         static List<MenuItems> menuItems = new List<MenuItems>();
         static ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
-        //static Chat ChatBot;
-        //static User UserBot;
-        //static Update UpdateBot;
-        //static WebhookInfo WebHookInfoBot;
-        //static Task<User> TaskUserBot;
-        //static Task<WebhookInfo> TaskWebHookInfoBot;
-        //static Task<Chat> TaskChatBot;
+
+        static MySqlConnection connection;
+        static DataSet data_set = new DataSet();
+        static DataRowCollection data_collection_row;
+        static MySqlDataAdapter data_adapter;
 
 
 
@@ -42,18 +42,20 @@ namespace ReignsBot
 
             #endregion
 
-            Console.WriteLine("Starting the bot");
-            ConsoleColor console_default_color = Console.ForegroundColor;
-            ClientBot.StartReceiving();
+            Console.WriteLine("Starting the bot");                                      //Console output starting
+                    ClientBot.StartReceiving();
+
             Console.Write("Reciving: ");
-            if(ClientBot.IsReceiving) Console.ForegroundColor = ConsoleColor.Green;
-            else Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(ClientBot.IsReceiving);
-            Console.ForegroundColor = console_default_color;
+            if (ClientBot.IsReceiving) ConsoleOutputs.Output(ConsoleOutputs.OutputType.True);
+            else ConsoleOutputs.Output(ConsoleOutputs.OutputType.False);
 
             MySqlConnectionStringBuilder connectionString;
+
+            #region Connection to db
+
             bool success=false;
             do {
+
                 try
                 {
                     string server, password = "";
@@ -93,9 +95,10 @@ namespace ReignsBot
                         SslMode = MySqlSslMode.None
                     };
 
-
-                    MySqlConnection connection = new MySqlConnection(connectionString.ConnectionString);
+                    connection = new MySqlConnection(connectionString.ConnectionString);
+                    Console.Write("Connecting to db: ");
                     connection.Open();
+                    ConsoleOutputs.Output(ConsoleOutputs.OutputType.Completed);
                     success = true;
                 }
                 catch (Exception ex)
@@ -105,60 +108,36 @@ namespace ReignsBot
                                   "\n Premi 'Enter' per continuare");
                     Console.ReadLine();
                 }
+
             }while (!success);
 
-            /*
-            using (var conn = new MySqlConnection(connection.ToString()))
-            using (var cmd = conn.CreateCommand())
-            {
-                cmd.CommandText = string.Format("SELECT * FROM commands");
-                conn.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    var data = reader.GetString(0);
-                    Console.WriteLine(data);
-                }
-            }*/
+            #endregion
+
+            //Get data from DB
+            data_adapter = new MySqlDataAdapter("SELECT * FROM commands", connection);
+            data_adapter.Fill(data_set, "commands");
 
             #region Menu init
 
             Console.Write("Init MenutItems: ");
-            menuItems.Add(new MenuItems("/start", "Start", "Start", "Ciao,benvenuto nel magico mondo di Reigns, dimostra a tutti le tue doti da sovrano!"));
-            menuItems.Add(new MenuItems("/startrandom", "Start Random", "Start your adventure in a random mode", "Sto genetando le domande da porti"));
-            menuItems.Add(new MenuItems("/startstory", "Start Story", "Start your adventure in your reign", "Che la storia abbia inizio"));
-            menuItems.Add(new MenuItems("/donate", "DONATION REQUEST", "Support our project", "Supportaci donando a paypal.me/Frikyfriks"));
-            menuItems.Add(new MenuItems("/stats", "Statistics", "Watch career stats of your reign", "Ecco le tue statistiche:"));
-            menuItems.Add(new MenuItems("/rules", "Game Rules", "Learn how to play", "Ogni anno arriva una nuova \nimportante e apparentemente casuale richiesta dal tuo imprevedibile regno, mentre dovrai fare tutto il possibile per mantenere l'equilibrio tra le seguenti classi:\n• Chiesa ⛪️ \n• Popolo 👨‍👩‍👧‍👦\n• Esercito ⚔️\n• Denaro 💰\nDecisioni attente e pianificazione ti porteranno a regnare a lungo, ma cause impreviste, eventi a sorpresa e scarsa fortuna possono far cadere anche il più radicato dei monarchi.Rimani a capo del tuo regno per più tempo possibile, crea alleanze, fatti dei nemici e trova nuovi modi per morire mentre la tua dinastia si fa strada negli anni."));
+
+            data_collection_row = data_set.Tables["commands"].Rows;
+            foreach (DataRow element in data_collection_row)
+            {
+                menuItems.Add(new MenuItems(element.ItemArray[1].ToString(), element.ItemArray[2].ToString(),
+                    element.ItemArray[3].ToString(), element.ItemArray[4].ToString()));
+            }
             menuItems.Add(new MenuItems("/button", "Test comand", "Test inline buttons", InlineKeyboardButton.WithCallbackData("Testo"), "Testo"));
             menuItems.Add(new MenuItems("/help", "Help", "Show help page", MenuItems.CunstructHelpPage(menuItems)));
-            Console.WriteLine("Complete!");
 
-            #endregion
-
-            #region Commento
-
-            /*
-             *  ClientBot.SetWebhookAsync("");
-             *  TaskWebHookInfoBot = ClientBot.GetWebhookInfoAsync();
-             *
-             *  Console.WriteLine("Web Hook Info: \n" +
-             *      "\t" + "Id:" + TaskWebHookInfoBot.Id + "\n" +
-             *      "\t" + "Status: " + TaskWebHookInfoBot.Status + "\n" +
-             *      "\t" + "Creation Options: " + TaskWebHookInfoBot.CreationOptions + "\n" +
-             *      "\t" + "Result: " + TaskWebHookInfoBot.Result + "\n"
-             *      );  
-             */
+            ConsoleOutputs.Output(ConsoleOutputs.OutputType.Completed);
 
             #endregion
 
             Console.WriteLine("Bot init finshed");
-
-
             Console.WriteLine("-----------------------------------------------------\n" +
                               "!!!!!AT ANY TIME, TYPE ENTER KEY TO STOP THE BOT!!!!!\n" +
                               "-----------------------------------------------------\n");
-
             //Da utilizzare qualcosa di meglio come una command line
             Console.ReadLine();
 
@@ -294,14 +273,6 @@ namespace ReignsBot
 
 
         }
-
-        #endregion
-
-        #region Methods
-
-        private void LinkTrigger() { }
-
-        private void connectToDb() { }
 
         #endregion
     }
