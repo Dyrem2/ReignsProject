@@ -43,15 +43,22 @@ namespace ReignsBot
             #endregion
 
             Console.WriteLine("Starting the bot");
+            ConsoleColor console_default_color = Console.ForegroundColor;
             ClientBot.StartReceiving();
-            Console.WriteLine("Reciving: " + ClientBot.IsReceiving);
+            Console.Write("Reciving: ");
+            if(ClientBot.IsReceiving) Console.ForegroundColor = ConsoleColor.Green;
+            else Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(ClientBot.IsReceiving);
+            Console.ForegroundColor = console_default_color;
+
             MySqlConnectionStringBuilder connectionString;
             bool success=false;
             do {
                 try
                 {
                     string server, password = "";
-                    Console.Write("Server: "); server = Console.ReadLine();
+                    Console.Write("Server: "); Console.ForegroundColor = ConsoleColor.DarkYellow; server = Console.ReadLine();
+                    Console.ForegroundColor = console_default_color;
                     Console.Write("Password: "); //password = Console.ReadLine();
                     ConsoleKeyInfo key;
                     do
