@@ -185,6 +185,27 @@ namespace ReignsBot
                         },
                    });
 
+            InlineKeyboardMarkup inizio = new InlineKeyboardMarkup(  //Clone di Menuinizio, serve per callbackquery di tastiera inline
+            new InlineKeyboardButton[][]
+            {
+                    new InlineKeyboardButton[]
+                        {
+                            new InlineKeyboardCallbackButton("Random Mode 🎲","rand"),
+                            new InlineKeyboardCallbackButton("Story Mode ⚜️","story"),
+                        },
+
+                    new InlineKeyboardButton[]
+                        {
+                            new InlineKeyboardCallbackButton("Come si gioca? 🔎","rules"),
+                        },
+                    new InlineKeyboardUrlButton[]
+                        {
+                            new InlineKeyboardUrlButton ("Donate 💰","https://www.paypal.me/FrikyFriks"),
+                            new InlineKeyboardUrlButton ("Support  ⛑", "https://t.me/ReignsSupportBot"),
+                        }
+                    });
+
+            string Str = "Ciao! Benvenuto nel bot Reigns, che ti permetterà di gestire il tuo regno! 🏰 \nRiuscirai a rendere contenti tutti? Quanto sopravviverai ? ";
 
             switch (e.CallbackQuery.Data)
             {
@@ -195,7 +216,7 @@ namespace ReignsBot
                     break;
 
                 case "story":
-                    ClientBot.EditMessageTextAsync(e.CallbackQuery.From.Id, e.CallbackQuery.Message.MessageId, "Work in progress");
+                    ClientBot.EditMessageTextAsync(e.CallbackQuery.From.Id, e.CallbackQuery.Message.MessageId, "Questa modalità è ancora in fase di sviluppo. Stay tuned");
                     ClientBot.EditMessageReplyMarkupAsync(e.CallbackQuery.From.Id, e.CallbackQuery.Message.MessageId, replyMarkup: Indietro);
                     break;
 
@@ -209,8 +230,13 @@ namespace ReignsBot
                     ClientBot.EditMessageReplyMarkupAsync(e.CallbackQuery.From.Id, e.CallbackQuery.Message.MessageId, replyMarkup: Indietro);
                     break;
 
+                case "back":
+                    ClientBot.EditMessageTextAsync(e.CallbackQuery.From.Id, e.CallbackQuery.Message.MessageId, Str);
+                    ClientBot.EditMessageReplyMarkupAsync(e.CallbackQuery.From.Id, e.CallbackQuery.Message.MessageId, replyMarkup: inizio);
+                    break;
+
                 default:
-                    ClientBot.SendTextMessageAsync(e.CallbackQuery.From.Id, "Qualcosa è andato storto");
+                    ClientBot.SendTextMessageAsync(e.CallbackQuery.From.Id, "Qualcosa è andato storto, riprova", replyMarkup: Indietro);
                     break;
 
 
