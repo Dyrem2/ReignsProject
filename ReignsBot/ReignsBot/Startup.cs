@@ -22,9 +22,8 @@ namespace ReignsBot
         static List<MenuItems> menuItems = new List<MenuItems>();
         static ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
 
-        static MySqlConnection connection;
+        static MySqlConnection sql_connection;
         static DataSet data_set = new DataSet();
-        static DataRowCollection data_collection_row;
         static MySqlDataAdapter data_adapter;
 
 
@@ -43,86 +42,23 @@ namespace ReignsBot
             #endregion
 
             Console.WriteLine("Starting the bot");                                      //Console output starting
-                    ClientBot.StartReceiving();
+            ClientBot.StartReceiving();
+
+            sql_connection = ConnectToDb();
 
             Console.Write("Reciving: ");
             if (ClientBot.IsReceiving) ConsoleOutputs.Output(ConsoleOutputs.OutputType.True);
             else ConsoleOutputs.Output(ConsoleOutputs.OutputType.False);
 
-            MySqlConnectionStringBuilder connectionString;
-
-            #region Connection to db
-
-            bool success=false;
-            do {
-
-                try
-                {
-                    string server, password = "";
-                    Console.Write("Server: "); Console.ForegroundColor = ConsoleColor.DarkYellow; server = Console.ReadLine();
-                    Console.ForegroundColor = console_default_color;
-                    Console.Write("Password: "); //password = Console.ReadLine();
-                    ConsoleKeyInfo key;
-                    do
-                    {
-                        key = Console.ReadKey(true);
-
-                        if (key.Key != ConsoleKey.Backspace && key.Key != ConsoleKey.Enter)
-                        {
-                            password += key.KeyChar;
-                            Console.Write("*");
-                        }
-                        else
-                        {
-                            if (key.Key == ConsoleKey.Backspace && password.Length > 0)
-                            {
-                                password = password.Substring(0, (password.Length - 1));
-                                Console.Write("\b \b");
-                            }
-                        }
-
-                    }
-                    // Stops Receving Keys Once Enter is Pressed
-                    while (key.Key != ConsoleKey.Enter);
-                    Console.WriteLine();
-
-                    connectionString = new MySqlConnectionStringBuilder
-                    {
-                        Server = server,
-                        UserID = "root",
-                        Password = password,
-                        Database = "db_reigns",
-                        SslMode = MySqlSslMode.None
-                    };
-
-                    connection = new MySqlConnection(connectionString.ConnectionString);
-                    Console.Write("Connecting to db: ");
-                    connection.Open();
-                    ConsoleOutputs.Output(ConsoleOutputs.OutputType.Completed);
-                    success = true;
-                }
-                catch (Exception ex)
-                { 
-                
-                    Console.Write("Errore durante la connessione al server: " + ex.Message +
-                                  "\n Premi 'Enter' per continuare");
-                    Console.ReadLine();
-                }
-
-            }while (!success);
-
-            #endregion
-
             //Get data from DB
-            data_adapter = new MySqlDataAdapter("SELECT * FROM commands", connection);
+            data_adapter = new MySqlDataAdapter("SELECT * FROM commands", sql_connection);
             data_adapter.Fill(data_set, "commands");
 
             #region Menu init
 
             Console.Write("Init MenutItems: ");
 
-            data_collection_row = data_set.Tables["commands"].Rows;
-            foreach (DataRow element in data_collection_row)
+            foreach (DataRow element in data_set.Tables["commands"].Rows)
             {
                 menuItems.Add(new MenuItems(element.ItemArray[1].ToString(), element.ItemArray[2].ToString(),
                     element.ItemArray[3].ToString(), element.ItemArray[4].ToString()));
@@ -138,6 +74,9 @@ namespace ReignsBot
             Console.WriteLine("-----------------------------------------------------\n" +
                               "!!!!!AT ANY TIME, TYPE ENTER KEY TO STOP THE BOT!!!!!\n" +
                               "-----------------------------------------------------\n");
+
+
+
             //Da utilizzare qualcosa di meglio come una command line
             Console.ReadLine();
 
@@ -274,6 +213,106 @@ namespace ReignsBot
 
         }
 
+        #endregion
+
+        #region Methods
+        private static MySqlConnection ConnectToDb(string database = "",string userID = "" , string server = "", string password = "", MySqlSslMode mode = MySqlSslMode.None)
+        { 
+            MySqlConnectionStringBuilder connectionString;
+            MySqlConnection connection = new MySqlConnection();
+
+            bool success = false;
+            do
+            {
+                try
+                {
+                    if (userID == "")
+                    {
+                        Console.Write("UserID (i.e. root, jhon, etc): "); Console.ForegroundColor = ConsoleColor.DarkYellow; userID = Console.ReadLine();
+                        Console.ForegroundColor = console_default_color;
+                    }
+                    if (database == "")
+                    {
+                        Console.Write("Database (i.e. db_reigns, etc): "); Console.ForegroundColor = ConsoleColor.DarkYellow; database = Console.ReadLine();
+                        Console.ForegroundColor = console_default_color;
+                    }
+                    if (server == "")
+                    {
+                        Console.Write("Server (ip where db server is located): "); Console.ForegroundColor = ConsoleColor.DarkYellow; server = Console.ReadLine();
+                        Console.ForegroundColor = console_default_color;
+                    }
+                    if (password == "")
+                    {
+                        Console.Write("Password: "); //password = Console.ReadLine();
+                        InputPassword(password);
+                        Console.WriteLine();
+                    }
+
+                    connectionString = new MySqlConnectionStringBuilder
+                    {
+                        Server = server,
+                        UserID = userID,
+                        Password = password,
+                        Database = database,
+                        SslMode = mode
+                    };
+
+                    connection = new MySqlConnection(connectionString.ConnectionString);
+                    Console.WriteLine("Connecting to db...");
+                    connection.Open();
+                    success = true;
+                }
+                catch (Exception ex)
+                {
+
+                    Console.Write("Errore durante la connessione al server: " + ex.Message +
+                                  "\n Riprovare la connessione? (y/P(solo password)/n): ");
+                    ConsoleKeyInfo key =  Console.ReadKey();
+                    Console.WriteLine();
+                    if (key.KeyChar == 'n') break;
+                    if (key.KeyChar == 'y')
+                    {
+                        userID = "";
+                        database = "";
+                        server = "";
+                        password = "";
+                    }
+                }
+
+            } while (!success);
+            Console.Write("Connection to DB: ");
+            if (success) ConsoleOutputs.Output(ConsoleOutputs.OutputType.Completed);
+            else ConsoleOutputs.Output(ConsoleOutputs.OutputType.Interrupted);
+
+            return connection;
+        }
+
+        public static void InputPassword(string password)
+        {
+
+            ConsoleKeyInfo key;
+            do
+            {
+                key = Console.ReadKey(true);
+
+                if (key.Key != ConsoleKey.Backspace && key.Key != ConsoleKey.Enter)
+                {
+                    password += key.KeyChar;
+                    Console.Write("*");
+                }
+                else
+                {
+                    if (key.Key == ConsoleKey.Backspace && password.Length > 0)
+                    {
+                        password = password.Substring(0, (password.Length - 1));
+                        Console.Write("\b \b");
+                    }
+                }
+
+            }
+            // Stops Receving Keys Once Enter is Pressed
+            while (key.Key != ConsoleKey.Enter);
+        }
         #endregion
     }
 }

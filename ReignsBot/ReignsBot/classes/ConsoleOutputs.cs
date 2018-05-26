@@ -33,6 +33,13 @@ namespace ReignsBot.classes
                     Console.ForegroundColor = Reigns.console_default_color;
                     break;
 
+                case OutputType.Interrupted:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    if (newLine) Console.WriteLine("Interrupted");
+                    else Console.Write("Interrupted");
+                    Console.ForegroundColor = Reigns.console_default_color;
+                    break;
+
                 default:
                     break;
             }

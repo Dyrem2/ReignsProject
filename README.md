@@ -1,2 +1,2 @@
 # ReignsProject
-This is an amatour prooject so don't bother if you get there
+This is an amatour project so don't bother if you get there

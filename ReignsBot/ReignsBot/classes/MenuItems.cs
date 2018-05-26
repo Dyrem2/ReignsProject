@@ -50,10 +50,10 @@ namespace ReignsBot.classes
         {
             string HelpPage = "";
 
+            HelpPage += "\t\tCOMMAND LIST\t\t\n";
             foreach(MenuItems command in CommandList)
             {
-                HelpPage += "\t\tCOMMAND LIST\t\t\n" +
-                "\t" + command.CommandName + "\n" +
+                HelpPage += "\t" + command.CommandName + "\n" +
                 "\t\t\t\tDesc:" + command.CommandDesc + "\n" +
                 "\t\t\t\tUsage:" + command.Trigger + "\n";
             }
